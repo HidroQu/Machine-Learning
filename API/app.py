@@ -84,44 +84,44 @@ def predict_nutrient():
             'error': str(e)
         }), 500
 
-# @app.route('/predictPlant', methods=['POST'])
-# def predict_plant():
-#     try:
-#         if 'plant_img' not in request.files:
-#             return jsonify({"error": "No file part"}), 400
+@app.route('/predictPlant', methods=['POST'])
+def predict_plant():
+    try:
+        if 'plant_img' not in request.files:
+            return jsonify({"error": "No file part"}), 400
         
-#         file = request.files['plant_img']
+        file = request.files['plant_img']
         
-#         if file.filename == '':
-#             return jsonify({"error": "No selected file"}), 400
+        if file.filename == '':
+            return jsonify({"error": "No selected file"}), 400
         
 
-#         if not allowed_file(file.filename):
-#             return jsonify({"error": "File type not allowed"}), 400
+        if not allowed_file(file.filename):
+            return jsonify({"error": "File type not allowed"}), 400
 
-#         # Process image
-#         try:
-#             processed_image = preprocess_image(file)
-#         except Exception as e:
-#             return jsonify({"error": f"Error processing image: {str(e)}"}), 400
+        # Process image
+        try:
+            processed_image = preprocess_image(file)
+        except Exception as e:
+            return jsonify({"error": f"Error processing image: {str(e)}"}), 400
 
-#         # prediction
-#         try:
-#             prediction, confidence = predict_image_plant(processed_image)
-#         except Exception as e:
-#             return jsonify({"error": f"Error making prediction: {str(e)}"}), 500
+        # prediction
+        try:
+            prediction, confidence = predict_image_plant(processed_image)
+        except Exception as e:
+            return jsonify({"error": f"Error making prediction: {str(e)}"}), 500
 
-#         return jsonify({
-#             'predicted_label': prediction,
-#             'confidence': float(confidence), 
-#             'status': 'success'
-#         })
+        return jsonify({
+            'predicted_label': prediction,
+            'confidence': float(confidence), 
+            'status': 'success'
+        })
 
-#     except Exception as e:
-#         return jsonify({
-#             'status': 'error',
-#             'error': str(e)
-#         }), 500
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'error': str(e)
+        }), 500
 
 
 if __name__ == '__main__':
