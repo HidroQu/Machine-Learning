@@ -11,12 +11,12 @@ app = Flask(__name__)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 # Load model and class definitions
-nutrient_model = load_model('model/nutrient.keras')
+nutrient_model = load_model('model/nutrients.keras')
 CLASS_NAMES_NUTRIENT = ['Healthy', 'Kalium_Deficiency',
                         'Nitrogen_Deficiency', 'Phosphorus_Deficiency']
 
 
-plant_model = load_model('model/plants_mobileNetV2.keras')
+plant_model = load_model('model/plants.keras')
 CLASS_NAMES_PLANTS = ['Bayam', 'Kangkung', 'Selada', 'Timun', 'Tomat', 'bokChoy']
 
 def allowed_file(filename):
