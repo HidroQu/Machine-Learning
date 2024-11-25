@@ -1,93 +1,127 @@
 from flask import Flask, request, jsonify
 import numpy as np
 from tensorflow.keras.models import load_model
-from PIL import Image
-import numpy as np
-
+from tensorflow.keras.utils import load_img, img_to_array
+import os
+from werkzeug.utils import secure_filename
+import io
 
 app = Flask(__name__)
 
-nutrient_model = load_model('model/nutrient.h5')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+# Load model and class definitions
+nutrient_model = load_model('model/nutrient.keras')
 CLASS_NAMES_NUTRIENT = ['Healthy', 'Kalium_Deficiency',
                         'Nitrogen_Deficiency', 'Phosphorus_Deficiency']
-nutrient_model.make_predict_function()
-
-plant_model = load_model('model/plants_mobileNetV2.h5')
-CLASS_NAMES_PLANT = ['Bayam', 'Kangkung',
-                     'Selada', 'Timun', 'Tomat', 'bokChoy']
-plant_model.make_predict_function()
 
 
-# Preprocesses the input image for prediction.
-def preprocess_image(image):
-    i = image.load_img(image, target_size=(224, 224), color_mode='rgb')
-    i = np.array(i)
-    i /= 255.0
-    i = np.expand_dims(i, axis=0)
+# plant_model = load_model('model/plants_mobileNetV2.h5')
+CLASS_NAMES_PLANTS = ['Bayam', 'Kangkung', 'Selada', 'Timun', 'Tomat', 'bokChoy']
 
-    return i
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def preprocess_image(file):
+    # Convert FileStorage to BytesIO
+    img_bytes = io.BytesIO(file.read())
+    
+    # Preprocess the image
+    img = load_img(img_bytes, target_size=(224, 224))
+    img_array = img_to_array(img)
+    img_array /= 255.0
+    img_array = np.expand_dims(img_array, axis=0)
+    return img_array
 
-# Predicts the nutrient deficiency class of the input image.
 def predict_image_nutrient(image):
-    p = nutrient_model.predict(image)
-    p = np.argmax(p, axis=1)
-    confidence = float(np.max(predictions[0]))
+    predictions = nutrient_model.predict(image)
+    pred_index = np.argmax(predictions, axis=1)
+    confidence = float(np.max(predictions))
+    return CLASS_NAMES_NUTRIENT[pred_index[0]], confidence
 
-    return CLASS_NAMES_NUTRIENT[i[0]], confidence
-
-
-# Predicts the plant type class of the input image.
 def predict_image_plant(image):
-    p = plant_model.predict(image)
-    p = np.argmax(p, axis=1)
-    confidence = float(np.max(predictions[0]))
+    predictions = plant_model.predict(image)
+    pred_index = np.argmax(predictions, axis=1)
+    confidence = float(np.max(predictions))
+    return CLASS_NAMES_PLANTS[pred_index[0]], confidence
 
-    return CLASS_NAMES_PLANT[i[0]], confidence
-
-
-# Endpoint to predict nutrient deficiency from an uploaded image.
-@app.route('/predictNutrient', method=['POST'])
+@app.route('/predictNutrient', methods=['POST'])
 def predict_nutrient():
     try:
-        file = request.files['file']
+        if 'nutrient_img' not in request.files:
+            return jsonify({"error": "No file part"}), 400
+        
+        file = request.files['nutrient_img']
+        
+        if file.filename == '':
+            return jsonify({"error": "No selected file"}), 400
+        
 
-        if not file:
-            return jsonify({"No File Uploaded"})
+        if not allowed_file(file.filename):
+            return jsonify({"error": "File type not allowed"}), 400
 
-        image = Image.open(file)
-        processed_image = preprocess_image(image)
-        predictions, confidence = predict_image_nutrient(processed_image)
+        # Process image
+        try:
+            processed_image = preprocess_image(file)
+        except Exception as e:
+            return jsonify({"error": f"Error processing image: {str(e)}"}), 400
+
+        # prediction
+        try:
+            prediction, confidence = predict_image_nutrient(processed_image)
+        except Exception as e:
+            return jsonify({"error": f"Error making prediction: {str(e)}"}), 500
 
         return jsonify({
-            'predicted_label': predictions,
-            'confidence': confidence
+            'predicted_label': prediction,
+            'confidence': float(confidence),  # Convert numpy float to Python float
+            'status': 'success'
         })
 
     except Exception as e:
-        return jsonify({'Error': str(e)}), 500
-
-
-# Endpoint to predict plant type from an uploaded image.
-@app.route('/predictPlants', method=['POST'])
-def predict_plants():
-    try:
-        file = request.files['file']
-
-        if not file:
-            return jsonify({"No File Uploaded"})
-
-        image = Image.open(file)
-        processed_image = preprocess_image(image)
-        predictions, confidence = predict_image_plant(processed_image)
-
         return jsonify({
-            'predicted_label': predictions,
-            'confidence': confidence
-        })
+            'status': 'error',
+            'error': str(e)
+        }), 500
 
-    except Exception as e:
-        return jsonify({'Error': str(e)}), 500
+# @app.route('/predictPlant', methods=['POST'])
+# def predict_plant():
+#     try:
+#         if 'plant_img' not in request.files:
+#             return jsonify({"error": "No file part"}), 400
+        
+#         file = request.files['plant_img']
+        
+#         if file.filename == '':
+#             return jsonify({"error": "No selected file"}), 400
+        
+
+#         if not allowed_file(file.filename):
+#             return jsonify({"error": "File type not allowed"}), 400
+
+#         # Process image
+#         try:
+#             processed_image = preprocess_image(file)
+#         except Exception as e:
+#             return jsonify({"error": f"Error processing image: {str(e)}"}), 400
+
+#         # prediction
+#         try:
+#             prediction, confidence = predict_image_plant(processed_image)
+#         except Exception as e:
+#             return jsonify({"error": f"Error making prediction: {str(e)}"}), 500
+
+#         return jsonify({
+#             'predicted_label': prediction,
+#             'confidence': float(confidence), 
+#             'status': 'success'
+#         })
+
+#     except Exception as e:
+#         return jsonify({
+#             'status': 'error',
+#             'error': str(e)
+#         }), 500
 
 
 if __name__ == '__main__':
