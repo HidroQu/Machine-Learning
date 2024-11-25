@@ -12,7 +12,7 @@ CLASS_NAMES_NUTRIENT = ['Healthy', 'Kalium_Deficiency',
                         'Nitrogen_Deficiency', 'Phosphorus_Deficiency']
 nutrient_model.make_predict_function()
 
-plant_model = load_model('model/plants_mobileNetV2.h5')
+plant_model = load_model('model/plants_mobileNetV2.keras')
 CLASS_NAMES_PLANT = ['Bayam', 'Kangkung',
                      'Selada', 'Timun', 'Tomat', 'bokChoy']
 plant_model.make_predict_function()
