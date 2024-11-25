@@ -16,7 +16,7 @@ CLASS_NAMES_NUTRIENT = ['Healthy', 'Kalium_Deficiency',
                         'Nitrogen_Deficiency', 'Phosphorus_Deficiency']
 
 
-# plant_model = load_model('model/plants_mobileNetV2.h5')
+# plant_model = load_model('model/plants_mobileNetV2.keras')
 CLASS_NAMES_PLANTS = ['Bayam', 'Kangkung', 'Selada', 'Timun', 'Tomat', 'bokChoy']
 
 def allowed_file(filename):
@@ -74,7 +74,7 @@ def predict_nutrient():
 
         return jsonify({
             'predicted_label': prediction,
-            'confidence': float(confidence),  # Convert numpy float to Python float
+            'confidence': float(confidence),  
             'status': 'success'
         })
 
