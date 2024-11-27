@@ -2,11 +2,17 @@ from flask import Flask, request, jsonify
 import numpy as np
 from tensorflow.keras.models import load_model
 from tensorflow.keras.utils import load_img, img_to_array
-import os
-from werkzeug.utils import secure_filename
+from flaskext.mysql import MySQL
 import io
 
 app = Flask(__name__)
+
+mysql = MySQL()
+app.config['MYSQL_DATABASE_USER'] = 'apiml'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'ApiML#123'
+app.config['MYSQL_DATABASE_DB'] = 'hidroqu'
+app.config['MYSQL_DATABASE_HOST'] = '168.138.164.252'
+mysql.init_app(app)
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
@@ -72,9 +78,18 @@ def predict_nutrient():
         except Exception as e:
             return jsonify({"error": f"Error making prediction: {str(e)}"}), 500
 
+        try:
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute("SELECT * from diagnostics WHERE disease_label = %s", (prediction,))
+            data = cursor.fetchone()
+        except Exception as e:
+            return jsonify({"error": f"Error fetch DB: {str(e)}"}), 500
+
         return jsonify({
             'predicted_label': prediction,
-            'confidence': float(confidence),  
+            'confidence': float(confidence),
+            'data': data,
             'status': 'success'
         })
 
@@ -111,9 +126,18 @@ def predict_plant():
         except Exception as e:
             return jsonify({"error": f"Error making prediction: {str(e)}"}), 500
 
-        return jsonify({
+        try:
+            conn = mysql.connect()
+            cursor = conn.cursor()
+            cursor.execute("SELECT * from plants WHERE name LIKE %s", (f"%{prediction}%",))
+            data = cursor.fetchone()
+        except Exception as e:
+            return jsonify({"error": f"Error fetch DB: {str(e)}"}), 500
+
+        return jsonify({       
             'predicted_label': prediction,
-            'confidence': float(confidence), 
+            'confidence': float(confidence),
+            'data': data,
             'status': 'success'
         })
 
