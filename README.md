@@ -1,5 +1,6 @@
 <img src="docs/images/app-logo.svg" alt="Logo HidroQu">
-# HidroQu - Machine Learning Path  
+
+### HidroQu - Machine Learning Path  
 
 **Tagline:**  
 *Empowering hydroponic farming with intelligent nutrient management and crop recognition.*  
