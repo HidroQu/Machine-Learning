@@ -17,7 +17,7 @@ mysql.init_app(app)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 # Load model and class definitions
-nutrient_model = load_model('model/nutrients_saved')
+nutrient_model = load_model('model/nutrients.keras')
 CLASS_NAMES_NUTRIENT = ['Healthy', 'Kalium_Deficiency',
                         'Nitrogen_Deficiency', 'Phosphorus_Deficiency']
 
