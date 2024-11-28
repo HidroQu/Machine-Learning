@@ -1,4 +1,4 @@
-
+![logo](docs/images/app-logo.svg)
 # HidroQu - Machine Learning Path  
 
 **Tagline:**  
