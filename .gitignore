@@ -4,3 +4,4 @@
 /dataset
 .idea
 .env
+__pycache__/

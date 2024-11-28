@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  hidroqu-ml:
+    build:
+      context: .
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - hidroqu-data:/app
+    networks:
+      - hidroqu-project
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_RUN_PORT=5000
+
+networks:
+  hidroqu-project:
+
+volumes:
+  hidroqu-data:
