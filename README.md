@@ -1,4 +1,4 @@
-![logo](docs/images/app-logo.svg)
+<img src="docs/images/app-logo.svg" alt="Logo HidroQu">
 # HidroQu - Machine Learning Path  
 
 **Tagline:**  
