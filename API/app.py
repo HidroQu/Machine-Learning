@@ -22,7 +22,7 @@ CLASS_NAMES_NUTRIENT = ['Healthy', 'Kalium_Deficiency',
                         'Nitrogen_Deficiency', 'Phosphorus_Deficiency']
 
 
-plant_model = load_model('model/plants_saved')
+plant_model = load_model('model/plants.keras')
 CLASS_NAMES_PLANTS = ['Bayam', 'Kangkung', 'Selada', 'Timun', 'Tomat', 'bokChoy']
 
 def allowed_file(filename):
