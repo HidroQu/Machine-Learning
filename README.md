@@ -39,7 +39,21 @@ HidroQu adalah aplikasi yang mendukung petani hidroponik untuk memonitor kesehat
    ```bash
    python app.py
    ```  
-4. Untuk input dan output model, lihat contoh pada file Jupyter Notebook (`.ipynb`).  
+4. Untuk input dan output model, lihat contoh pada file Jupyter Notebook (`.ipynb`).
+Menggunakan Docker
+1. Clone repository ini:  
+   ```bash
+   git clone https://github.com/your-organization/your-repo.git
+   cd your-repo
+   ```
+2. Build docker:
+```bash
+docker build -t hidroqu-ml .
+```
+3. Run docker:
+```bash
+docker run -p 5000:5000 hidroqu-ml:latest
+```
 
 ## Hasil dan Evaluasi  
 - **Pengenalan Tanaman:**  
