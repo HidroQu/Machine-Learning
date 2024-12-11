@@ -28,8 +28,8 @@ HidroQu adalah aplikasi yang mendukung petani hidroponik untuk memonitor kesehat
 ## Instruksi Penggunaan  
 1. Clone repository ini:  
    ```bash
-   git clone https://github.com/your-organization/your-repo.git
-   cd your-repo
+   git clone https://github.com/HidroQu/Machine-Learning.git
+   cd Machine-Learning
    ```  
 2. Install dependencies:  
    ```bash
@@ -45,8 +45,8 @@ Menggunakan Docker
 
 1. Clone repository ini:  
    ```bash
-   git clone https://github.com/your-organization/your-repo.git
-   cd your-repo
+   git clone https://github.com/HidroQu/Machine-Learning.git
+   cd Machine-Learning
    ```
 2. Build docker:
 ```bash
