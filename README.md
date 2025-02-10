@@ -56,6 +56,10 @@ docker build -t hidroqu-ml .
 ```bash
 docker run -p 5000:5000 hidroqu-ml:latest
 ```
+4. Menggunakan Docker Compose
+```bash
+docker compose up
+```
 
 ## Hasil dan Evaluasi  
 - **Pengenalan Tanaman:**  
